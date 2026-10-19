@@ -1,5 +1,7 @@
-def control_usuarios():
-    while True
+def from datetime import datetime
+
+control_usuarios():
+    while True:
 
         mostrar_menu_usuarios()
 
@@ -39,27 +41,30 @@ def mostrar_menu_usuarios():
 def registrar_usuario():
     
     while True:
-        try:
+        
             nombre = insertar_datos("el nombre de usario: ")
             apellidos = insertar_datos("los apellidos: ")
             idpersona = insertar_datos("el numero de identificacion: ")
-            estado_civil = insertar_datos("el estado civil: ")
+            stado_civil = insertar_datos("el estado civil: ")
             nacionalidad = insertar_datos("la nacionalidad: ")
-            anio_ingreso = insertar_datos("la nacionalidad: ")
-            fecha_nacimiento = insertar_datos("la fecha de nacimiento en formato AAAA-MM-DD: ")
+            anio_ingreso = insertar_datos("el anio de ingreso: ")
             telefono = insertar_datos("el numero de telefono: ")
             correo = insertar_datos("el correo electronico: ")
+            carreras = (insertar_datos("Ingrese la o las carreras a las que pertenece usando las siglas. "
+                                           + "Separelo por comas ',' .\n")).split(",")
+        try:
+            fecha_nacimiento = datetime.strptime(insertar_datos("la fecha de nacimiento en formato AAAA-MM-DD: "),"%Y-%m-%d").date()
+        except ValueError:
+            print("La fecha ingresada no es valida")
 
-            while True:
-                print("Ingrese la carrera a la que pertence: ")
-                carreras.append(insertar_datos("Ingrese la o las carreras a las que pertenece.")
-    
+#def modificar_usuario():
 
-def modificar_usuario():
+#def eliminar_usario():
 
-def eliminar_usario():
-
-def consultar_usuario():
+#def consultar_usuario():
 
 def insertar_datos(valor_escrito):
-    entrada = input(f."Favor digite {valor_escrito}")
+    entrada = input(f"Favor digite {valor_escrito}")
+    return entrada
+
+registrar_usuario()

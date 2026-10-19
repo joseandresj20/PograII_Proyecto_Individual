@@ -12,49 +12,28 @@ def registrar_prestamo():
 
 def registrar_devolucion():
 
-def menu_principal():
+def mostrar_menu_principal():
+    print("Bienvenido al Sistema de Biblioteca Republica de los Cocos")
+    print("1. Administrador de usuarios.")
+    print("3. Administrador de libros.")
+    print("5. Administrador de prestamos")
+    print("7. Acerca de...")
+    print("7. Salir\n")
+
+
+
+def mostrar_menu_principal():
     
     while True:
-        print("Bienvenido al Sistema de Biblioteca Republica de los Cocos")
-        print("1. Administrador de usuarios.")
-        print("3. Administrador de libros.")
-        print("5. Administrador de prestamos")
-        print("7. Acerca de...")
-        print("7. Salir\n")
+
+        mostrar_menu()
         
         opcion = input("Favor ingresar la opcion deseada: ")
         
         if opcion == "1":
-            
-            
-            while True
-
-                print("\nIngresando al apartado de administracion de usuarios....\n")
-                print("Sistema de Administracion de usuarios")
-                print("1. Registrar usuario.")
-                print("2. Modificar usuario.")
-                print("3. Eliminar ususario.")
-                print("4. Consultar usario")
-                
-                opcion = input("Favor ingresar la opcion deseada: ")
-                
-                if opcion == "1":
-
-                elif opcion == "2":
-
-                elif opcion == "3":
-
-                elif opcion == "4":
-
-                else:
-                    print("La opcion indicada es invalida. Intentelo nuevamente./n")
-                
-                
-            
 
             
-            lista_conejos.append(ingresar_mascota())
-            print("\nEl conejo fue registrado de manera existosa.\n")
+            
             
         elif opcion == "2":
             

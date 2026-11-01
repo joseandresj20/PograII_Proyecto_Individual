@@ -1,6 +1,6 @@
-def from datetime import datetime
+from datetime import datetime
 
-control_usuarios():
+def control_usuarios():
     while True:
 
         mostrar_menu_usuarios()
@@ -28,7 +28,7 @@ control_usuarios():
             break
 
         else:
-            print("La opcion indicada es invalida. Intentelo nuevamente./n")
+            print("La opcion indicada es invalida. Intentelo nuevamente.\n")
 
 def mostrar_menu_usuarios():
     print("\nIngresando al apartado de administracion de usuarios....\n")

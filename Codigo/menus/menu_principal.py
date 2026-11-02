@@ -1,5 +1,6 @@
 from menus.administrador_usuarios import control_usuarios
 from menus.administrador_libros import control_libros
+from menus.administrador_prestamos import control_prestamos
 
 def mostrar_menu_principal():
 
@@ -11,8 +12,7 @@ def mostrar_menu_principal():
 
         print("1. Administrador de usuarios.")
         print("2. Administrador de libros.")
-        print("3. Administrador de préstamos.")
-        print("4. Administrador de devoluciones.")
+        print("3. Administrador de préstamos y devoluciones.")
         print("5. Acerca de...")
         print("6. Salir")
         print("==============================================")
@@ -28,10 +28,8 @@ def mostrar_menu_principal():
             control_libros()
 
         elif opcion == "3":
-            print("\nIngresando al administrador de préstamos...")
-
-        elif opcion == "4":
-            print("\nIngresando al administrador de devoluciones...")
+            print("\nIngresando al administrador de préstamos y devoluciones...")
+            control_prestamos()
 
         elif opcion == "5":
             print("\nSistema de gestión de la Biblioteca República de los Cocos.")

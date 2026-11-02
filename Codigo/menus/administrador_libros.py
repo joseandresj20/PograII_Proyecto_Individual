@@ -6,7 +6,10 @@ from utilidades.validaciones import (
     validar_isbn,
     validar_anio_publicacion
 )
+from manejo_xml.libro_xml import LibroXML
 
+# Crea el objeto para administrar el archivo XML.
+libro_xml = LibroXML()
 
 # Controla las opciones del menu de administracion de libros
 def control_libros():
@@ -24,7 +27,7 @@ def control_libros():
             modificar_libro()
 
         elif opcion == "3":
-            eliminar_libro()
+            inactivar_libro()
 
         elif opcion == "4":
             consultar_libros()
@@ -42,7 +45,7 @@ def mostrar_menu_libros():
     print("\n--- ADMINISTRACION DE LIBROS ---")
     print("1. Registrar libro")
     print("2. Modificar libro")
-    print("3. Eliminar libro")
+    print("3. Inactivar libro")
     print("4. Consultar libros")
     print("5. Regresar")
 
@@ -75,9 +78,15 @@ def registrar_libro():
         condicion
     )
 
-    # Muestra la confirmacion del registro.
-    print("\nLibro registrado correctamente.")
-    print(f"Codigo asignado: {nuevo_libro.codigo}")
+    # Guarda el libro en el archivo XML.
+    if libro_xml.agregar(nuevo_libro):
+
+        # Muestra la confirmacion del registro.
+        print("\nLibro registrado correctamente.")
+        print(f"Codigo asignado: {nuevo_libro.codigo}")
+
+    else:
+        print("\nNo fue posible guardar el libro en el XML.")
 
 # Genera automaticamente el siguiente codigo disponible.
 def generar_codigo_libro():
@@ -198,6 +207,98 @@ def consultar_libros():
         print(f"Condicion: {libro.condicion.capitalize()}")
         print("----------------------------------------------")
 
+# Busca un libro mediante su codigo.
+def buscar_libro(codigo):
+
+    # Recorre los libros registrados.
+    for libro in Libro.libros:
+
+        # Comprueba si el codigo coincide.
+        if libro.codigo == codigo:
+            return libro
+
+    # Indica que no se encontro el libro.
+    return None
+
+
+# Permite modificar los datos de un libro registrado.
+def modificar_libro():
+
+    print("\n==============================================")
+    print("               MODIFICAR LIBRO")
+    print("==============================================")
+
+    # Solicita el codigo del libro.
+    codigo = input("Ingrese el codigo del libro: ").strip()
+
+    # Comprueba que el codigo contenga solamente numeros.
+    if not codigo.isdigit():
+        print("El codigo debe contener solamente numeros.")
+        return
+
+    # Busca el libro mediante su codigo.
+    libro = buscar_libro(int(codigo))
+
+    # Comprueba si el libro existe.
+    if libro is None:
+        print("No se encontro un libro con ese codigo.")
+        return
+
+    # Muestra los datos actuales del libro.
+    print("\nLibro encontrado:")
+    print(f"Nombre: {libro.nombre_libro}")
+    print(f"ISBN: {libro.isbn}")
+    print(f"Autor: {libro.autor}")
+    print(f"Edicion: {libro.edicion}")
+    print(f"Año de publicacion: {libro.anio_publicacion}")
+    print(f"Condicion: {libro.condicion}")
+    print(f"Estado: {libro.estado}")
+
+    # Muestra las opciones de modificacion.
+    while True:
+        print("\n¿Qué dato desea modificar?")
+        print("1. Nombre")
+        print("2. ISBN")
+        print("3. Autor")
+        print("4. Edicion")
+        print("5. Año de publicacion")
+        print("6. Condicion")
+        print("7. Regresar")
+
+        opcion = input("\nSeleccione una opcion: ").strip()
+
+        if opcion == "1":
+            libro.nombre_libro = solicitar_nombre_libro()
+
+        elif opcion == "2":
+            libro.isbn = solicitar_isbn()
+
+        elif opcion == "3":
+            libro.autor = solicitar_autor()
+
+        elif opcion == "4":
+            libro.edicion = solicitar_edicion()
+
+        elif opcion == "5":
+            libro.anio_publicacion = solicitar_anio_publicacion()
+
+        elif opcion == "6":
+            condicion = solicitar_condicion()
+            libro.definir_condicion(condicion)
+
+        elif opcion == "7":
+            break
+
+        else:
+            print("Opcion no valida.")
+            continue
+
+        # Actualiza los datos del libro en el archivo XML.
+        if libro_xml.modificar(libro):
+            print("\nLibro actualizado correctamente.")
+        else:
+            print("\nNo fue posible actualizar el libro en el XML.")
+
 # Busca libros utilizando diferentes criterios.
 def buscar_libros(criterio, valor):
 
@@ -225,108 +326,6 @@ def buscar_libros(criterio, valor):
 
     return libros_encontrados
 
-# Permite modificar los datos de un libro registrado.
-
-# Permite modificar los datos de un libro registrado.
-def modificar_libro():
-
-    print("\n==============================================")
-    print("               MODIFICAR LIBRO")
-    print("==============================================")
-
-    # Muestra los criterios de busqueda disponibles.
-    print("\nSeleccione un criterio de busqueda:")
-    print("1. Nombre")
-    print("2. Codigo")
-    print("3. ISBN")
-    print("4. Autor")
-
-    criterio = input("\nSeleccione una opcion: ").strip()
-
-    # Comprueba que el criterio sea valido.
-    if criterio not in ("1", "2", "3", "4"):
-        print("La opcion seleccionada no es valida.")
-        return
-
-    # Solicita el valor que se utilizara para buscar.
-    valor = input("Ingrese el valor de busqueda: ").strip()
-
-    # Comprueba que se haya ingresado un valor.
-    if not valor:
-        print("Debe ingresar un valor para realizar la busqueda.")
-        return
-
-    # Busca los libros que coincidan con el criterio.
-    libros_encontrados = buscar_libros(criterio, valor)
-
-    # Permite seleccionar el libro que se desea modificar.
-    libro = seleccionar_libro(libros_encontrados)
-
-    # Comprueba si se selecciono un libro.
-    if libro is None:
-        return
-
-    # Muestra las opciones de modificacion.
-    while True:
-
-        print("\n¿Qué dato desea modificar?")
-        print("1. Nombre")
-        print("2. ISBN")
-        print("3. Autor")
-        print("4. Edicion")
-        print("5. Año de publicacion")
-        print("6. Condicion")
-        print("7. Estado")
-        print("8. Regresar")
-
-        opcion = input("Seleccione una opcion: ").strip()
-
-        if opcion == "1":
-            libro.nombre_libro = solicitar_nombre_libro()
-            print("Nombre actualizado correctamente.")
-
-        elif opcion == "2":
-            libro.isbn = solicitar_isbn()
-            print("ISBN actualizado correctamente.")
-
-        elif opcion == "3":
-            libro.autor = solicitar_autor()
-            print("Autor actualizado correctamente.")
-
-        elif opcion == "4":
-            libro.edicion = solicitar_edicion()
-            print("Edicion actualizada correctamente.")
-
-        elif opcion == "5":
-            libro.anio_publicacion = solicitar_anio_publicacion()
-            print("Año de publicacion actualizado correctamente.")
-
-        elif opcion == "6":
-            condicion = solicitar_condicion()
-            libro.definir_condicion(condicion)
-            print("Condicion actualizada correctamente.")
-
-        elif opcion == "7":
-
-            # Muestra los estados disponibles.
-            for clave, valor in Libro.estados.items():
-                print(f"{clave}. {valor.capitalize()}")
-
-            estado = input("Seleccione el nuevo estado: ").strip()
-
-            # Comprueba que el estado seleccionado sea valido.
-            if estado.isdigit() and int(estado) in Libro.estados:
-                libro.definir_estado(int(estado))
-                print("Estado actualizado correctamente.")
-            else:
-                print("La opcion seleccionada no es valida.")
-
-        elif opcion == "8":
-            break
-
-        else:
-            print("La opcion seleccionada no es valida.")
-
 # Permite seleccionar un libro de los resultados de busqueda.
 def seleccionar_libro(libros_encontrados):
 
@@ -338,29 +337,98 @@ def seleccionar_libro(libros_encontrados):
     # Muestra los libros encontrados.
     print("\nLibros encontrados:")
 
-    for indice, libro in enumerate(libros_encontrados, start=1):
-        print(f"\n{indice}. {libro.nombre_libro}")
+    # Recorre los indices de los libros encontrados.
+    for indice in range(len(libros_encontrados)):
+
+        # Obtiene el libro correspondiente al indice.
+        libro = libros_encontrados[indice]
+
+        print(f"\n{indice + 1}. {libro.nombre_libro}")
         print(f"   Codigo: {libro.codigo}")
         print(f"   ISBN: {libro.isbn}")
         print(f"   Autor: {libro.autor}")
         print(f"   Estado: {libro.estado}")
 
-    # Solicita seleccionar un libro.
-    while True:
-        seleccion = input("\nSeleccione el libro (0 para cancelar): ").strip()
+        # Consulta si desea seleccionar el libro.
+        seleccion = input("\n¿Desea seleccionar este libro? (S/N): ").strip().lower()
 
-        # Comprueba que la seleccion sea numerica.
-        if seleccion.isdigit():
+        # Devuelve el libro seleccionado.
+        if seleccion == "s":
+            return libro
 
-            seleccion = int(seleccion)
+        # Continua con el siguiente libro.
+        elif seleccion == "n":
+            continue
 
-            # Permite cancelar la seleccion.
-            if seleccion == 0:
-                return None
+        else:
+            print("Opcion no valida. Se continuara con el siguiente libro.")
 
-            # Comprueba que la seleccion exista.
-            if 1 <= seleccion <= len(libros_encontrados):
-                return libros_encontrados[seleccion - 1]
+    # Indica que no se selecciono ningun libro.
+    print("No se selecciono ningun libro.")
+    return None
 
-        print("La seleccion no es valida.")
+# Permite inactivar un libro registrado.
+def inactivar_libro():
 
+    print("\n==============================================")
+    print("               INACTIVAR LIBRO")
+    print("==============================================")
+
+    # Muestra los criterios de busqueda disponibles.
+    print("\nSeleccione el criterio de busqueda:")
+    print("1. Nombre")
+    print("2. Codigo")
+    print("3. ISBN")
+    print("4. Autor")
+
+    criterio = input("\nIngrese una opcion: ").strip()
+
+    # Comprueba que el criterio sea valido.
+    if criterio not in ["1", "2", "3", "4"]:
+        print("Opcion no valida.")
+        return
+
+    # Solicita el valor que se utilizara para buscar.
+    valor = input("Ingrese el dato que desea buscar: ").strip()
+
+    # Busca los libros que coincidan con el criterio.
+    libros_encontrados = buscar_libros(criterio, valor)
+
+    # Permite seleccionar uno de los libros encontrados.
+    libro = seleccionar_libro(libros_encontrados)
+
+    # Comprueba si se selecciono un libro.
+    if libro is None:
+        return
+
+    # Comprueba si el libro ya se encuentra inactivo.
+    if libro.estado == "inactivo":
+        print("El libro ya se encuentra inactivo.")
+        return
+
+    # Comprueba si el libro se encuentra prestado.
+    if libro.estado == "prestado":
+        print("No se puede inactivar un libro prestado.")
+        return
+
+    # Solicita confirmacion antes de inactivar el libro.
+    confirmacion = input("\n¿Desea inactivar este libro? (S/N): ").strip().lower()
+
+    if confirmacion == "s":
+
+        # Cambia el estado del libro a inactivo.
+        libro.definir_estado(3)
+
+        # Actualiza el estado del libro en el archivo XML.
+        if libro_xml.modificar(libro):
+            print("\nLibro inactivado correctamente.")
+        else:
+            print("\nNo fue posible actualizar el libro en el XML.")
+
+    elif confirmacion == "n":
+        print("\nOperacion cancelada.")
+
+    else:
+        print("\nOpcion no valida. No se realizaron cambios.")
+
+        

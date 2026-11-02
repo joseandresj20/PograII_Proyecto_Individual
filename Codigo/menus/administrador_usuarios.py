@@ -13,7 +13,11 @@ from utilidades.validaciones import (
 from clases.usuario import Usuario
 from clases.estudiante import Estudiante
 from clases.docente import Docente
+from clases.prestamo import Prestamo
+from manejo_xml.usuario_xml import UsuarioXML
 
+# Crea el objeto para administrar el archivo XML.
+usuario_xml = UsuarioXML()
 
 # Controla el funcionamiento del menú de administración de usuarios.
 # Mantiene el menú activo hasta que el usuario seleccione regresar.
@@ -115,8 +119,14 @@ def registrar_usuario():
             estado_civil, anio_ingreso, fecha_nacimiento, telefono, correo
         )
 
-    #Muestra un mensaje de confirmacion
-    print("\nUsuario registrado correctamente.")
+    # Guarda el usuario en el archivo XML.
+    if usuario_xml.agregar(nuevo_usuario):
+
+        # Muestra un mensaje de confirmacion.
+        print("\nUsuario registrado correctamente.")
+
+    else:
+        print("\nNo fue posible guardar el usuario en el XML.")
 
 
 # Gestiona la modificación de la información de un usuario existente.
@@ -187,8 +197,14 @@ def modificar_usuario():
             print("\nLa opcion seleccionada no es valida.")
             continue
 
-        # Confirma que la modificacion se realizo correctamente.
-        print("\nLa informacion del usuario fue actualizada correctamente.")
+                # Actualiza los datos del usuario en el archivo XML.
+        if usuario_xml.modificar(usuario):
+
+            # Confirma que la modificacion se realizo correctamente.
+            print("\nLa informacion del usuario fue actualizada correctamente.")
+
+        else:
+            print("\nNo fue posible actualizar el usuario en el XML.")
 
 
 # Gestiona la eliminación de un usuario registrado en el sistema.
@@ -210,6 +226,12 @@ def eliminar_usuario():
         print("\nNo se encontro ningun usuario con esa identificacion.")
         return
 
+    # Comprueba si el usuario tiene prestamos registrados.
+    for prestamo in Prestamo.registro_prestamos:
+        if prestamo.usuario.idpersona == idpersona:
+            print("\nNo se puede eliminar el usuario porque tiene historial de prestamos.")
+            return
+
     # Solicita confirmacion antes de eliminar el usuario.
     confirmacion = input(
         f"\n¿Desea eliminar a {usuario.nombre} {usuario.apellidos}? (S/N): "
@@ -218,16 +240,24 @@ def eliminar_usuario():
     # Comprueba la respuesta del usuario.
     if confirmacion == "S":
 
-        # Elimina el usuario de la lista de usuarios registrados.
-        Usuario.usuarios.remove(usuario)
+        # Elimina el usuario del archivo XML.
+        if usuario_xml.eliminar(idpersona):
 
-        print("\nEl usuario fue eliminado correctamente.")
+            # Elimina el usuario de la lista en memoria.
+            Usuario.usuarios.remove(usuario)
+
+            print("\nEl usuario fue eliminado correctamente.")
+
+        else:
+            print("\nNo fue posible eliminar el usuario del XML.")
 
     elif confirmacion == "N":
         print("\nOperacion cancelada.")
 
     else:
         print("\nOpcion no valida. No se elimino el usuario.")
+
+
 
 
 # Permite consultar la información de los usuarios registrados.

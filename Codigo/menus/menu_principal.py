@@ -32,7 +32,7 @@ def mostrar_menu_principal():
             control_prestamos()
 
         elif opcion == "5":
-            print("\nSistema de gestión de la Biblioteca República de los Cocos.")
+            mostrar_acerca_de()
 
         elif opcion == "6":
             print("\nGracias por utilizar nuestro sistema.")
@@ -40,4 +40,23 @@ def mostrar_menu_principal():
 
         else:
             print("\nOpción inválida. Intente nuevamente.")
+
+def mostrar_acerca_de():
+
+    print("\n=====================================================")
+    print("     PROYECTO BIBLIOTECA REPÚBLICA DE LOS COCOS")
+    print("=====================================================")
+
+    print("\nINFORMACIÓN DEL CURSO")
+    print("Curso: TI-131 Programación II")
+    print("Docente: Róger Rodríguez López")
+    print("Periodo: III Cuatrimestre 2026")
+    print("Institución: Colegio Universitario de Cartago")
+
+    print("\nINFORMACIÓN DEL ESTUDIANTE")
+    print("Estudiante: Jose Andres Jimenez Coto")
+    print("Carnet: 304620100")
+    print("Carrera: Tecnologias de Informacion")
+    
+    print("\n==============================================")
 
